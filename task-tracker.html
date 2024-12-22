@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        form input, form button {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        form button {
+            flex: 0;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        table th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Tracker</h1>
+        <form id="task-form">
+            <input type="text" id="task-name" placeholder="Task Name" required>
+            <input type="date" id="start-date" required>
+            <input type="date" id="end-date" required>
+            <button type="submit">Add Task</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Task Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Due Days Left</th>
+                    <th>Completion Date</th>
+                </tr>
+            </thead>
+            <tbody id="task-list">
+                <!-- Tasks will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const taskForm = document.getElementById('task-form');
+        const taskList = document.getElementById('task-list');
+
+        taskForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const taskName = document.getElementById('task-name').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+            const dueDaysLeft = Math.ceil((endDateObj - new Date()) / (1000 * 60 * 60 * 24));
+
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${taskName}</td>
+                <td>${startDate}</td>
+                <td>${endDate}</td>
+                <td>${dueDaysLeft > 0 ? dueDaysLeft : 'Overdue'}</td>
+                <td><button onclick="markAsComplete(this)">Mark Complete</button></td>
+            `;
+
+            taskList.appendChild(newRow);
+
+            taskForm.reset();
+        });
+
+        function markAsComplete(button) {
+            const row = button.parentElement.parentElement;
+            const completionDate = new Date().toLocaleDateString();
+            row.innerHTML = `
+                <td>${row.children[0].textContent}</td>
+                <td>${row.children[1].textContent}</td>
+                <td>${row.children[2].textContent}</td>
+                <td>${row.children[3].textContent}</td>
+                <td>${completionDate}</td>
+            `;
+        }
+    </script>
+</body>
+</html>
